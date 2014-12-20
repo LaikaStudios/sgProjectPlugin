@@ -1,0 +1,24 @@
+Note to developers:
+    
+    The PythonStatic.zip file contains all the python for this app with the exception of shotgun_config.py.
+    The zip file was built by taking all the python files from IronPython 2.7 and then laying in the shotgun files.
+    The shotgun_api3 directory is not used at runtime
+
+    The cacerts.txt file was copied from shotgun_api3/lib/httplib2/cacerts.txt
+    It was not readable by the httplib2 code when it lived inside the .zip file, so it had to be broken out to a real file.
+    Adding a <redacted> SSL certificate didn't seem to work, so the SSL code throws an error, which is ignored by
+    adding the line:  
+        shotgun_api3.shotgun.NO_SSL_VALIDATION = True
+    before any connections.
+    To pick up this new location at runtime, there is a change to shotgun.py starting on line 1444 (that lives in the .zip file)
+
+
+    Another change to the shotgun files:
+        In shotgun_api3/lib/httplib2/iri2uri.py on line 72, changed 
+        Old line:
+            authority = authority.encode('idna')
+        New line:
+            authority = authority.encode('utf-8')
+
+    Most of this was stolen/borrowed from here:
+        http://blog.duber.cz/software/calling-shotgun-api-v3-0-8-from-ironpython
